@@ -327,10 +327,10 @@ function moverRobot( event )
 {
   switch ( event.code )
   {
-    case 'ArrowUp':    robot.position.z -= PASO; break;
-    case 'ArrowDown':  robot.position.z += PASO; break;
-    case 'ArrowLeft':  robot.position.x -= PASO; break;
-    case 'ArrowRight': robot.position.x += PASO; break;
+    case 'ArrowUp':    robot.position.z += PASO; break;
+    case 'ArrowDown':  robot.position.z -= PASO; break;
+    case 'ArrowLeft':  robot.position.x += PASO; break;
+    case 'ArrowRight': robot.position.x -= PASO; break;
     default: return;
   }
   robot.position.x = THREE.MathUtils.clamp( robot.position.x, -LIMITE, LIMITE );
