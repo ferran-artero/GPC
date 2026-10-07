@@ -1,0 +1,159 @@
+<!doctype html>
+<!--
+Proyecto Personal GPC: Rover de exploracion en Marte (Victoria Crater)
+Ferran Artero Merino
+-->
+<html lang="ca-valencia">
+	<head>
+		<meta charset='utf-8'>
+		<title>Sol 951 | Ferran Artero Merino - Projecte GPC</title>
+		<style>
+			body {
+				background-color: #000;
+				margin: 0px;
+				overflow: hidden;
+			}
+			#ayuda {
+				position: absolute; right: 12px; bottom: 12px;
+				padding: 6px 10px; border-radius: 4px;
+				background: rgba(0,0,0,0.45); color: #f3e6d8;
+				font: 13px sans-serif; pointer-events: none;
+			}
+			#marcador {
+				position: absolute; right: 12px; top: 12px;
+				padding: 6px 12px; border-radius: 4px;
+				background: rgba(0,0,0,0.45); color: #f3e6d8;
+				font: bold 14px sans-serif; white-space: pre; pointer-events: none;
+			}
+			#mensaje {
+				position: absolute; left: 50%; bottom: 18%; transform: translateX(-50%);
+				padding: 10px 18px; border-radius: 6px; display: none;
+				background: rgba(0,0,0,0.6); color: #ffffff;
+				font: 18px sans-serif; pointer-events: none;
+			}
+			#mensaje b { color: #ffe08a; }
+			/* Bateria: una pila con el borne a la derecha y el relleno que se acorta */
+			#bateria {
+				position: absolute; right: 12px; top: 50px;
+				display: flex; align-items: center; gap: 8px;
+				padding: 6px 12px; border-radius: 4px; background: rgba(0,0,0,0.45);
+				color: #f3e6d8; font: bold 14px sans-serif; pointer-events: none;
+			}
+			#bateriaPila {
+				position: relative; width: 90px; height: 20px; box-sizing: border-box;
+				border: 2px solid #f3e6d8; border-radius: 4px; padding: 2px;
+			}
+			#bateriaPila::after {
+				content: ''; position: absolute; right: -7px; top: 4px;
+				width: 4px; height: 8px; background: #f3e6d8; border-radius: 0 2px 2px 0;
+			}
+			#bateriaRelleno { height: 100%; width: 100%; border-radius: 1px; background: #5dff8f; }
+			#bateriaTexto { margin-left: 4px; min-width: 44px; }
+			/* Pantallas de inicio y de final: tapan todo el juego */
+			.pantalla {
+				position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+				display: flex; align-items: center; justify-content: center;
+				background: rgba(24,12,6,0.78); color: #ffffff; font: 17px/1.5 sans-serif;
+				z-index: 10;
+			}
+			.pantalla > div { width: min(600px, 86vw); text-align: center; }
+			.pantalla h1 { margin: 0 0 40px 0; color: #ffe08a; font-size: 46px; letter-spacing: 3px; }
+			.pantalla h3 { margin: 0 0 34px 0; font-weight: normal; opacity: 0.85; }
+			.pantalla p { margin: 0 0 40px 0; }
+			.pantalla b { color: #ffe08a; }
+			.pantalla ul { list-style: none; padding: 0; margin: 44px 0 0 0; font-size: 15px; opacity: 0.95; }
+			.pantalla button {
+				padding: 12px 34px; border: 2px solid #ffe08a; border-radius: 8px; cursor: pointer;
+				background: transparent; color: #ffe08a; font: bold 19px sans-serif;
+			}
+			.pantalla button:hover { background: #ffe08a; color: #24140a; }
+			.pantalla small { display: block; margin-top: 10px; opacity: 0.7; }
+			#pantallaFin { display: none; }
+			#tarjeta {
+				position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+				width: min(520px, 80vw); padding: 22px 28px; border-radius: 10px; display: none;
+				background: rgba(20,14,10,0.88); border: 2px solid #ffe08a;
+				box-shadow: 0 0 30px rgba(0,0,0,0.7);
+				color: #ffffff; font: 17px/1.45 sans-serif;
+			}
+			#tarjeta h2 { margin: 0 0 12px 0; color: #ffe08a; font-size: 22px; }
+			#tarjeta p { margin: 0 0 12px 0; }
+			#tarjeta b { color: #ffe08a; }
+			#tarjetaPie { margin: 16px 0 0 0; font-size: 14px; text-align: right; opacity: 0.85; }
+			#deteccion {
+				position: absolute; left: 0; top: 0;
+				display: none; pointer-events: none;
+			}
+			#marcoMini {
+				position: absolute; box-sizing: border-box;
+				border: 2px solid #f3e6d8; border-radius: 3px;
+				box-shadow: 0 0 8px rgba(0,0,0,0.6);
+				pointer-events: none;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- Contenedor del app -->
+		<div id="container"></div>
+		<canvas id="deteccion"></canvas>
+		<div id="marcoMini"></div>
+		<div id="marcador"></div>
+		<div id="bateria">
+			Bateria
+			<div id="bateriaPila"><div id="bateriaRelleno"></div></div>
+			<span id="bateriaTexto"></span>
+		</div>
+		<div id="mensaje"></div>
+		<div id="pantallaInicio" class="pantalla">
+			<div>
+				<h1>SOL 951</h1>
+				<p>Controles un ròver inspirat en <b>Opportunity</b> al <b>cràter Victoria</b> de Mart. Busca les
+				mostres, arreplega-les (en caben <b>3</b>) i porta-les a la <b>zona de mostres</b> de la base abans que
+				s'acabe la bateria. Cada mostra et descobrix un concepte de <b>robòtica</b>, d'<b>intel·ligència
+				artificial</b>, de <b>Mart</b> o de la <b>missió d'Opportunity</b>.</p>
+				<button id="botonComenzar">Començar</button>
+				<small>o prem Intro</small>
+				<ul>
+					<li><b>WASD</b> o <b>fletxes</b>: conduir &nbsp;·&nbsp; <b>Espai</b>: propulsors (gasten molta bateria)</li>
+					<li><b>E</b>: arreplegar i entregar &nbsp;·&nbsp; <b>C</b>: canviar de càmera</li>
+					<li>La càmera en primera persona <b>detecta</b> les mostres de lluny</li>
+					<li>Entregar una mostra <b>recarrega</b> part de la bateria</li>
+				</ul>
+			</div>
+		</div>
+		<div id="pantallaFin" class="pantalla">
+			<div>
+				<h1 id="finTitulo"></h1>
+				<h3 id="finTexto"></h3>
+				<p id="finDatos"></p>
+				<button id="botonOtraVez">Tornar a jugar</button>
+				<small>o prem Intro</small>
+			</div>
+		</div>
+		<div id="tarjeta">
+			<h2 id="tarjetaTitulo"></h2>
+			<p id="tarjetaTexto"></p>
+			<p id="tarjetaJuego"></p>
+			<p id="tarjetaPie">Prem <b>E</b> o <b>Intro</b> per a continuar</p>
+		</div>
+		<div id="ayuda">WASD / fletxes: conduir &nbsp;·&nbsp; Espai: propulsors &nbsp;·&nbsp; E: arreplegar / entregar &nbsp;·&nbsp; C: càmera (3a persona / 1a persona)</div>
+
+		<!-- Scripts de biblioteca -->
+		<script src="lib/three.min_r140.js"></script>
+		<!-- tween_18.js acaba con module.exports (formato CommonJS): se define module para que no de error -->
+		<script>var module = { exports: {} };</script>
+		<script src="lib/tween_18.js"></script>
+
+		<!-- Mi codigo -->
+		<script src="js/sol951/base.js"></script>
+		<script src="js/sol951/colisiones.js"></script>
+		<script src="js/sol951/rocas.js"></script>
+		<script src="js/sol951/juego.js"></script>
+		<script src="js/sol951/tarjetas.js"></script>
+		<script src="js/sol951/muestras.js"></script>
+		<script src="js/sol951/rover.js"></script>
+		<script src="js/sol951/deteccion.js"></script>
+		<script src="js/sol951/main.js"></script>
+
+	</body>
+</html>

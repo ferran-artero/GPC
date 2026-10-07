@@ -1,0 +1,13 @@
+{
+  "size": 512,
+  "textura": 2048,
+  "metros_por_pixel": 2.0237,
+  "ancho_metros": 1036.1,
+  "altura_min_m": -1443.82,
+  "altura_max_m": -1364.94,
+  "desnivel_m": 78.88,
+  "altura_borde_normalizada": 0.8371,
+  "color_borde": "#875b41",
+  "bin": "Uint16 little-endian, fila a fila (norte arriba); altura = min + v/65535*desnivel",
+  "fuente": "heightmap_DTEEC_021747_1780_022380_1780_U01.IMG / textura_ESP_021747_1780_RED_C_01_ORTHO.JP2 (NASA/JPL/UArizona)"
+}

@@ -115,9 +115,6 @@ function loadScene()
   mano.add( pinzaDe );
 
   scene.add( robot );
-
-  // Ejes de ayuda (quitar al entregar)
-  scene.add( new THREE.AxesHelper( 100 ) );
 }
 
 // Dedo: paralelepipedo de 4x20x19 que se pega a la mano + cuna.
@@ -138,54 +135,74 @@ function crearDedo( material )
 // La cara x = 2 es plana y la de x < 0 es la inclinada
 function crearGeometriaCuna()
 {
-  // vertices: 0-3 en la base, 4-7 en la punta
-  var v = [
-    new THREE.Vector3( -2, -10,  0 ),   // 0
-    new THREE.Vector3(  2, -10,  0 ),   // 1
-    new THREE.Vector3(  2,  10,  0 ),   // 2
-    new THREE.Vector3( -2,  10,  0 ),   // 3
-    new THREE.Vector3(  0,  -5, 19 ),   // 4
-    new THREE.Vector3(  2,  -5, 19 ),   // 5
-    new THREE.Vector3(  2,   5, 19 ),   // 6
-    new THREE.Vector3(  0,   5, 19 )    // 7
-  ];
-
-  // caras (cuadrilateros en sentido antihorario visto desde fuera)
-  var caras = [
-    [ 0, 3, 2, 1 ],   // base
-    [ 4, 5, 6, 7 ],   // punta
-    [ 1, 2, 6, 5 ],   // interior
-    [ 0, 4, 7, 3 ],   // exterior
-    [ 0, 1, 5, 4 ],   // inferior
-    [ 3, 7, 6, 2 ]    // superior
-  ];
-
-  var posiciones = [];
-  var normales = [];
-
-  for ( var i = 0; i < caras.length; i++ )
-  {
-    var c = caras[i];
-
-    // normal de la cara = producto vectorial de dos aristas
-    var n = new THREE.Vector3()
-      .subVectors( v[c[1]], v[c[0]] )
-      .cross( new THREE.Vector3().subVectors( v[c[2]], v[c[0]] ) )
-      .normalize();
-
-    // dos triangulos por cara
-    var tri = [ c[0], c[1], c[2], c[0], c[2], c[3] ];
-    for ( var j = 0; j < tri.length; j++ )
-    {
-      var p = v[tri[j]];
-      posiciones.push( p.x, p.y, p.z );
-      normales.push( n.x, n.y, n.z );
-    }
-  }
-
   var geometria = new THREE.BufferGeometry();
-  geometria.setAttribute( 'position', new THREE.BufferAttribute( new Float32Array( posiciones ), 3 ) );
+
+  // Vertices sin indices: 6 caras x 2 triangulos x 3 vertices,
+  // en sentido antihorario vistos desde fuera
+  var vertices = new Float32Array([
+    // Base (pegada al soporte, z = 0)
+    -2, -10,  0,
+    -2,  10,  0,
+     2,  10,  0,
+    -2, -10,  0,
+     2,  10,  0,
+     2, -10,  0,
+    // Punta (z = 19)
+     0,  -5, 19,
+     2,  -5, 19,
+     2,   5, 19,
+     0,  -5, 19,
+     2,   5, 19,
+     0,   5, 19,
+    // Cara interior (plana, x = 2)
+     2, -10,  0,
+     2,  10,  0,
+     2,   5, 19,
+     2, -10,  0,
+     2,   5, 19,
+     2,  -5, 19,
+    // Cara exterior (inclinada)
+    -2, -10,  0,
+     0,  -5, 19,
+     0,   5, 19,
+    -2, -10,  0,
+     0,   5, 19,
+    -2,  10,  0,
+    // Cara inferior
+    -2, -10,  0,
+     2, -10,  0,
+     2,  -5, 19,
+    -2, -10,  0,
+     2,  -5, 19,
+     0,  -5, 19,
+    // Cara superior
+    -2,  10,  0,
+     0,   5, 19,
+     2,   5, 19,
+    -2,  10,  0,
+     2,   5, 19,
+     2,  10,  0
+  ]);
+  geometria.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+
+  // Una normal por cara, repetida en sus 6 vertices.
+  // Las caras inclinadas no miran a un eje: su normal sale del producto
+  // vectorial de dos aristas: (-19,0,2) la exterior y (0,-76,20) la inferior
+  // (la superior es simetrica), divididas por su modulo
+  var normalesCara = [
+    [  0,       0,      -1      ],   // base
+    [  0,       0,       1      ],   // punta
+    [  1,       0,       0      ],   // interior
+    [ -0.9945,  0,       0.1047 ],   // exterior
+    [  0,      -0.9671,  0.2545 ],   // inferior
+    [  0,       0.9671,  0.2545 ]    // superior
+  ];
+  var normales = [];
+  for ( var i = 0; i < normalesCara.length; i++ )
+    for ( var j = 0; j < 6; j++ )
+      normales.push( normalesCara[i][0], normalesCara[i][1], normalesCara[i][2] );
   geometria.setAttribute( 'normal', new THREE.BufferAttribute( new Float32Array( normales ), 3 ) );
+
   return geometria;
 }
 
