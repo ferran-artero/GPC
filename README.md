@@ -9,12 +9,15 @@ Autor: Ferran Artero Merino
 | Pàgina | Contingut |
 |---|---|
 | [sol951.html](https://ferran-artero.github.io/GPC/sol951.html) | **Sol 951**, el projecte personal: un joc d'exploració a Mart |
+| [Vídeo de presentació](https://github.com/ferran-artero/GPC/releases/download/v1.0/Video_Sol951_GPC_Ferran.Artero_Merino.mp4) | Demostració de **Sol 951** amb explicació (≈3 min) |
 | [fartmer_P2_GrafoEscena.html](https://ferran-artero.github.io/GPC/fartmer_P2_GrafoEscena.html) | P2 – Braç robòtic construït amb un graf d'escena |
 | [fartmer_P3_MovimientoCamara.html](https://ferran-artero.github.io/GPC/fartmer_P3_MovimientoCamara.html) | P3 – Càmera orbital i vista zenital en miniatura |
 | [fartmer_P4_Interaccion.html](https://ferran-artero.github.io/GPC/fartmer_P4_Interaccion.html) | P4 – Interfície de control, teclat i animació |
 | [fartmer_P5_LucesMateriales.html](https://ferran-artero.github.io/GPC/fartmer_P5_LucesMateriales.html) | P5 – Llums, ombres, textures i mapa d'entorn |
 
 ## Sol 951
+
+**[Juga'l ací](https://ferran-artero.github.io/GPC/sol951.html)** · **[Mira el vídeo de presentació](https://github.com/ferran-artero/GPC/releases/download/v1.0/Video_Sol951_GPC_Ferran.Artero_Merino.mp4)**
 
 Controles un ròver inspirat en **Opportunity** al **cràter Victoria** de Mart. Has de trobar les 12 mostres repartides pel mapa, arreplegar-les amb el braç i portar-les a la zona de mostres de la base abans que s'acabe la bateria. Cada mostra que arreplegues obri una targeta que explica un concepte de robòtica mòbil, d'intel·ligència artificial, de Mart o de la missió d'Opportunity.
 
